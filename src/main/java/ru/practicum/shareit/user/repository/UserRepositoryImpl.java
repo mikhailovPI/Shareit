@@ -31,9 +31,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User createUser(User user) throws ValidationException {
-
         if (usersEmail.contains(user.getEmail())) {
-            throw new ValidationException("Пользователь с %d уже существует.");
+            throw new EntityFoundException("Пользователь с таким e-mail уже существует.");
         }
 
         user.setId(++userId);
