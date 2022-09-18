@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.UserMapper;
@@ -14,8 +13,11 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public List<UserDto> getAllUsers() {
@@ -36,7 +38,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
         if (user.getEmail() == null) {
-            throw new ValidationException(String.format("E-mail не должен быть пустым."));
+            throw new ValidationException("E-mail не должен быть пустым.");
         }
         if (!user.getEmail().contains("@")) {
             throw new ValidationException("Введен некорректный e-mail.");

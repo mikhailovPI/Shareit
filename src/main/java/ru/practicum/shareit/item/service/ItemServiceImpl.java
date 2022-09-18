@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -17,10 +16,13 @@ import java.util.stream.Collectors;
 @Service
 public class ItemServiceImpl implements ItemService {
 
-    @Autowired
-    private ItemRepository itemRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+
+    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository) {
+        this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public List<ItemDto> getAllItems(Long userId) {
@@ -29,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
         }
         List<ItemDto> itemDtoList = new ArrayList<>();
         for (Item item : itemRepository.getAllItem(userId)) {
-            if (item.getOwnerId() == userId) {
+            if (item.getOwnerId().equals(userId)) {
                 ItemDto itemDto = ItemMapper.toItemDto(item);
                 itemDtoList.add(itemDto);
             }
