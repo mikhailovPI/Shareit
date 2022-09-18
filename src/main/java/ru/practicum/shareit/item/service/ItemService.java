@@ -15,6 +15,6 @@ public interface ItemService {
 
     void removeItem(Long id);
 
-    ItemDto patchItem(ItemDto itemDto,Long userId, Long id);
+    ItemDto patchItem(ItemDto itemDto, Long userId, Long id);
 
 }

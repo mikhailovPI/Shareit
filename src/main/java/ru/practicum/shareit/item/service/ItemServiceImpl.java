@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -38,7 +39,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItemById(Long itemId) {
-
         return ItemMapper.toItemDto(itemRepository.getItemById(itemId));
     }
 
@@ -56,6 +56,9 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException(String.format("Пользователя с id %s не существует.", userId));
         }
         Item item = ItemMapper.toItem(itemDto, userId);
+        if (item.getName().isEmpty() || item.getDescription() == null || item.getAvailable() == null) {
+            throw new ValidationException("Данно поле не может быть пустым.");
+        }
         return ItemMapper.toItemDto(itemRepository.createItem(item));
     }
 

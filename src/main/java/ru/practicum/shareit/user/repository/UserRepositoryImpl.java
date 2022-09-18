@@ -24,7 +24,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserById(Long id) {
         if (!users.containsKey(id)) {
-            throw new NotFoundException(String.format("Пользователя с %s не существует.", id ));
+            throw new NotFoundException(String.format("Пользователя с %s не существует.", id));
         }
         return users.get(id);
     }
@@ -34,12 +34,7 @@ public class UserRepositoryImpl implements UserRepository {
         if (usersEmail.contains(user.getEmail())) {
             throw new ValidationException(String.format("Пользователь с %d уже существует.", user.getEmail()));
         }
-        if (user.getEmail()==null) {
-            throw new ValidationException(String.format("E-mail не должен быть пустым."));
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new ValidationException("Введен некорректный e-mail.");
-        }
+
         user.setId(++userId);
         users.put(user.getId(), user);
         usersEmail.add(user.getEmail());
@@ -49,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void removeUser(Long id) {
         if (!users.containsKey(id)) {
-            throw new ValidationException(String.format("Пользователя с %s не существует.", id ));
+            throw new ValidationException(String.format("Пользователя с %s не существует.", id));
         }
         usersEmail.remove(users.get(id).getEmail());
         users.remove(id);

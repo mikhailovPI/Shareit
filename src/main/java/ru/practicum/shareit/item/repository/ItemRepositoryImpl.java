@@ -41,9 +41,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item createItem(Item item) {
-        if (item.getName().isEmpty() || item.getDescription() == null || item.getAvailable() == null) {
-            throw new ValidationException("Данно поле не может быть пустым.");
-        }
+
         item.setId(++id);
         items.put(item.getId(), item);
         return items.get(item.getId());

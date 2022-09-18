@@ -13,23 +13,9 @@ public class ItemMapper {
         item.setOwnerId(userId);
         item.setRequest(item.getRequest());
         return item;
-/*        return new Item(
-                itemDto.getId(),
-                itemDto.getName(),
-                itemDto.getDescription(),
-                itemDto.getAvailable(),
-                itemDto.getOwnerId(),
-                itemDto.getRequest());*/
     }
 
     public static ItemDto toItemDto(Item item) {
-/*        ItemDto itemDto = new ItemDto();
-        itemDto.setName(item.getName());
-        itemDto.setDescription(item.getDescription());
-        itemDto.setAvailable(item.getAvailable());
-        itemDto.setOwner(item.getOwner());
-        itemDto.setRequest(item.getRequest());
-        return itemDto;*/
         return new ItemDto(
                 item.getId(),
                 item.getName(),
