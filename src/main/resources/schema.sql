@@ -1,8 +1,3 @@
-drop table users cascade;
-drop table requests cascade;
-drop table items cascade;
-drop table bookings cascade;
-drop table comments cascade;
 
 CREATE TABLE IF NOT EXISTS users
 (
