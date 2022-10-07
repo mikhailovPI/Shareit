@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
+import ru.practicum.shareit.user.model.User;
+
+import javax.persistence.*;
 
 /**
  * TODO Sprint add-controllers.
@@ -10,18 +13,28 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
+@Entity
+@Table(name = "items", schema = "public")
 public class Item {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "item_name")
     private String name;
 
+    @Column(name = "description")
     private String description;
 
+    @Column(name = "available")
     private Boolean available;
 
-    private Long ownerId;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
-    private String request;
+    @Column(name = "request_id")
+    private Long request;
 }

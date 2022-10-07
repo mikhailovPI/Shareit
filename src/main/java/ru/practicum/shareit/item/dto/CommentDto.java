@@ -5,25 +5,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.shareit.user.model.User;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ItemDto {
+public class CommentDto {
 
     private Long id;
 
-    private String name;
+    private String text;
 
-    private String description;
+    private String authorName;
 
-    private Boolean available;
-
-    private User owner;
-
-    private Long request;
-
+    private LocalDateTime created;
 }
