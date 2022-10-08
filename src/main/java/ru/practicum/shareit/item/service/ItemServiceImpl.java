@@ -77,17 +77,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getItemSearch(String text) {
-        List<ItemDto> list = new ArrayList<>();
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
-        for (Item item : itemRepository.search(text)) {
-            if (item.getAvailable()) {
-                ItemDto itemDto = ItemMapper.toItemDto(item);
-                list.add(itemDto);
-            }
-        }
-        return list;
+        return itemRepository.search(text)
+                .stream()
+                .filter(Item::getAvailable)
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override

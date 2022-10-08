@@ -14,9 +14,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@EqualsAndHashCode
 @AllArgsConstructor
-@ToString
 public class BookingDto {
 
     private Long id;

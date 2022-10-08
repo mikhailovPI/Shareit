@@ -5,7 +5,6 @@ import lombok.*;
 @Getter
 @Setter
 @EqualsAndHashCode
-@NoArgsConstructor
 @AllArgsConstructor
 public class BookingItemDto {
 
