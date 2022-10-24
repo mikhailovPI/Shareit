@@ -27,14 +27,14 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse bookingException(final BookingException e) {
+    public ErrorResponse handelBookingException(final BookingException e) {
         log.info("400 {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse errorException(final NotFoundException e) {
+    public ErrorResponse handelNotFoundException(final NotFoundException e) {
         log.info("404 {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
