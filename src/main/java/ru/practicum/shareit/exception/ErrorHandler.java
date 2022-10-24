@@ -13,20 +13,6 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleEntityNotFoundException(final EntityNotFoundException e) {
-        log.info("500 {}", e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleEntityFoundException(final EntityFoundException e) {
-        log.info("500 {}", e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse defaultHandle(final Exception e) {
         log.info("500 {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());

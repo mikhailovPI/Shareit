@@ -6,6 +6,7 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 public class BookingItemDto {
 
     private Long id;

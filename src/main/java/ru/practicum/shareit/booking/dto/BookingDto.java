@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 public class BookingDto {
 
     private Long id;

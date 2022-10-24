@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.PageRequestOverride;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -14,9 +15,11 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,45 +36,71 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
-    public List<BookingDto> getAllBookings(Long userId, String stateParam) {
+    public List<BookingDto> getAllBookings(Long userId, String stateParam, int from, int size) {
+        BookingStateEnum state = BookingStateEnum.from(stateParam);
+        if (state == null) {
+            throw new IllegalArgumentException("Unknown state: " + stateParam);
+        }
+        if (from < 0 || size <= 0) {
+            throw new ValidationException("Переданы некорректные значения from и/или size");
+        }
+
+        PageRequestOverride pageRequest = PageRequestOverride.of(from, size);
+
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Пользователь %s не существует.", userId)));
-
         switch (BookingStateEnum.valueOf(stateParam)) {
             case CURRENT:
                 return bookingRepository
-                        .findCurrentBookingsByBookerIdOrderByStartDesc(userId, LocalDateTime.now())
+                        .findCurrentBookingsByBookerIdOrderByStartDesc(
+                                userId,
+                                LocalDateTime.now(),
+                                pageRequest)
                         .stream()
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             case PAST:
                 return bookingRepository
-                        .findBookingsByBookerIdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now())
+                        .findBookingsByBookerIdAndEndIsBeforeOrderByStartDesc(
+                                userId,
+                                LocalDateTime.now(),
+                                pageRequest)
                         .stream()
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             case FUTURE:
                 return bookingRepository
-                        .findByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now())
+                        .findByBookerIdAndStartAfterOrderByStartDesc(
+                                userId,
+                                LocalDateTime.now(),
+                                pageRequest)
                         .stream()
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             case WAITING:
                 return bookingRepository
-                        .findBookingsByBookerIdAndStatusOrderByStartDesc(userId, BookingStateEnum.WAITING)
+                        .findBookingsByBookerIdAndStatusOrderByStartDesc(
+                                userId,
+                                BookingStateEnum.WAITING,
+                                pageRequest)
                         .stream()
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             case REJECTED:
                 return bookingRepository
-                        .findBookingsByBookerIdAndStatusOrderByStartDesc(userId, BookingStateEnum.REJECTED)
+                        .findBookingsByBookerIdAndStatusOrderByStartDesc(
+                                userId,
+                                BookingStateEnum.REJECTED,
+                                pageRequest)
                         .stream()
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             default:
                 return bookingRepository
-                        .findByBookerIdOrderByStartDesc(userId)
+                        .findByBookerIdOrderByStartDesc(
+                                userId,
+                                pageRequest)
                         .stream()
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
@@ -80,7 +109,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto getBookingById(Long userId, Long bookingId) {
-
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException(
                 String.format("Бронирование %s не существует.", bookingId)));
         if (!booking.getBooker().getId().equals(userId) && !booking.getItem().getOwner().getId().equals(userId)) {
@@ -90,54 +118,81 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllBookingItemsUser(Long userId, String stateParam) {
-        userRepository.findById(userId)
+    public List<BookingDto> getAllBookingItemsUser(Long userId, String stateParam, int from, int size) {
+        BookingStateEnum state = BookingStateEnum.from(stateParam);
+        if (state == null) {
+            throw new IllegalArgumentException("Unknown state: " + stateParam);
+        }
+        if (from < 0 || size <= 0) {
+            throw new ValidationException("Переданы некорректные значения from и/или size");
+        }
+        PageRequestOverride pageRequest = PageRequestOverride.of(from, size);
+
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Пользователь %s не существует.", userId)));
-        List<BookingDto> bookingsUserList = bookingRepository.searchBookingByItemOwnerId(userId)
+        List<BookingDto> bookingsUserList = bookingRepository.getBookingsByItemOwnerId(
+                        userId,
+                        pageRequest)
                 .stream()
                 .map(BookingMapper::toBookingDto)
                 .collect(Collectors.toList());
 
         if (bookingsUserList.isEmpty()) {
-            throw new NotFoundException("У пользователя нет вещей");
+            throw new NotFoundException("У пользователя нет вещей.");
         }
 
         switch (BookingStateEnum.valueOf(stateParam)) {
+            case ALL:
+                bookingsUserList.sort(Comparator.comparing(BookingDto::getStart).reversed());
+                return bookingsUserList;
             case CURRENT:
                 return bookingRepository
-                        .findCurrentBookingsByItemOwnerIdOrderByStartDesc(userId, LocalDateTime.now())
+                        .findCurrentBookingsByItemOwnerIdOrderByStartDesc(
+                                userId,
+                                LocalDateTime.now(),
+                                pageRequest)
                         .stream()
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             case PAST:
                 return bookingRepository
-                        .findBookingsByItemOwnerIdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now())
+                        .findBookingsByItemOwnerIdAndEndIsBeforeOrderByStartDesc(
+                                userId,
+                                LocalDateTime.now(),
+                                pageRequest)
                         .stream()
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             case FUTURE:
                 return bookingRepository
-                        .searchBookingByItemOwnerIdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now())
+                        .searchBookingByItemOwnerIdAndStartIsAfterOrderByStartDesc(
+                                userId,
+                                LocalDateTime.now(),
+                                pageRequest)
                         .stream()
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             case WAITING:
                 return bookingRepository
-                        .findBookingsByItemOwnerIdOrderByStartDesc(userId)
+                        .findBookingsByItemOwnerIdOrderByStartDesc(
+                                userId,
+                                pageRequest)
                         .stream()
                         .filter(booking -> booking.getStatus().equals(BookingStateEnum.WAITING))
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             case REJECTED:
                 return bookingRepository
-                        .findBookingsByItemOwnerIdOrderByStartDesc(userId).stream()
+                        .findBookingsByItemOwnerIdOrderByStartDesc(
+                                userId,
+                                pageRequest)
+                        .stream()
                         .filter(booking -> booking.getStatus().equals(BookingStateEnum.REJECTED))
                         .map(BookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             default:
-                bookingsUserList.sort(Comparator.comparing(BookingDto::getStart).reversed());
-                return bookingsUserList;
+                return new ArrayList<>();
         }
     }
 
@@ -153,7 +208,7 @@ public class BookingServiceImpl implements BookingService {
                         String.format("Вещь %s не существует.", bookingDto.getItemId())));
 
         if (item.getOwner().getId().equals(userId)) {
-            throw new NotFoundException("Владелец вещи не может забронировать свою вещь");
+            throw new NotFoundException("Владелец вещи не может забронировать свою вещь.");
         }
         if (booking.getEnd().isBefore(booking.getStart())) {
             throw new BookingException("Некорректное время окончания бронирования.");
@@ -177,10 +232,10 @@ public class BookingServiceImpl implements BookingService {
         BookingDto bookingDto = toBookingDto(bookingRepository.findById(bookingId).orElseThrow());
         Booking booking = BookingMapper.toBooking(bookingDto);
         if (!userId.equals(bookingDto.getItem().getOwner().getId())) {
-            throw new NotFoundException("Подтвердить бронирование может только владелец вещи");
+            throw new NotFoundException("Подтвердить бронирование может только владелец вещи.");
         }
         if (booking.getStatus().equals(BookingStateEnum.APPROVED)) {
-            throw new BookingException("Бронирование уже было подтверждено");
+            throw new BookingException("Бронирование уже было подтверждено.");
         }
         if (approved == null) {
             throw new BookingException("Необходимо указать статус возможности аренды (approved).");
@@ -198,8 +253,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public void removeBookingById(Long bookingId) {
-        bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException(
-                String.format("Бронирование %s не существует.", bookingId)));
         bookingRepository.deleteById(bookingId);
     }
 }

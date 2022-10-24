@@ -40,15 +40,15 @@ public class CommentServiceImpl implements CommentService {
                 .searchBookingByBookerIdAndItemIdAndEndIsBefore(userId, itemId, LocalDateTime.now())
                 .stream().noneMatch(booking -> booking.getStatus().equals(BookingStateEnum.APPROVED));
         if (bookingBoolean) {
-            throw new BookingException(String.format("Пользователь %s не брал в аренду вещь %d", userId, itemId));
+            throw new BookingException(String.format("Пользователь %s не брал в аренду вещь %d.", userId, itemId));
         }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(
-                        String.format("Пользователя с %s не существует.", userId)));
+                        String.format("Пользователь %s не существует.", userId)));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(
-                        String.format("Вещь с %s не существует.", itemId)));
+                        String.format("Вещь %s не существует.", itemId)));
 
         Comment comment = CommentMapper.toComment(commentDto);
         comment.setItem(item);
