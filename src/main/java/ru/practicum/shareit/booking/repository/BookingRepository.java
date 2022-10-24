@@ -40,8 +40,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             LocalDateTime time,
             PageRequestOverride pageRequest);
 
-    List<Booking> getBookingsByItemOwnerId(Long userId,
-                                           PageRequestOverride pageRequest);
+    List<Booking> searchBookingByItemOwnerIdOrderByStartDesc(Long userId,
+                                             PageRequestOverride pageRequest);
 
     List<Booking> searchBookingByItemOwnerIdAndStartIsAfterOrderByStartDesc(
             Long id,
@@ -63,7 +63,18 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             LocalDateTime time,
             PageRequestOverride pageRequest);
 
+    List<Booking> findCurrentBookingsByItemOwnerId(
+            Long userId,
+            LocalDateTime time,
+            PageRequestOverride pageRequest);
+
+
     List<Booking> findBookingsByItemOwnerIdAndEndIsBeforeOrderByStartDesc(
+            Long userId,
+            LocalDateTime time,
+            PageRequestOverride pageRequest);
+
+    List<Booking> findBookingsByItemOwnerIdAndEndIsBefore(
             Long userId,
             LocalDateTime time,
             PageRequestOverride pageRequest);

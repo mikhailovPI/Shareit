@@ -126,12 +126,12 @@ public class BookingServiceImpl implements BookingService {
         if (from < 0 || size <= 0) {
             throw new ValidationException("Переданы некорректные значения from и/или size");
         }
-        PageRequestOverride pageRequest = PageRequestOverride.of(from, size);
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Пользователь %s не существует.", userId)));
-        List<BookingDto> bookingsUserList = bookingRepository.getBookingsByItemOwnerId(
+        PageRequestOverride pageRequest = PageRequestOverride.of(from, size);
+
+        List<BookingDto> bookingsUserList = bookingRepository.searchBookingByItemOwnerIdOrderByStartDesc(
                         userId,
                         pageRequest)
                 .stream()
@@ -157,7 +157,7 @@ public class BookingServiceImpl implements BookingService {
                         .collect(Collectors.toList());
             case PAST:
                 return bookingRepository
-                        .findBookingsByItemOwnerIdAndEndIsBeforeOrderByStartDesc(
+                        .findBookingsByItemOwnerIdAndEndIsBefore(
                                 userId,
                                 LocalDateTime.now(),
                                 pageRequest)

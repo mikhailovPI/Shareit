@@ -363,7 +363,7 @@ class BookingServiceImplTest {
         BookingDto bookingDto = BookingMapper.toBookingDto(booking);
         when(userRepository.findById(booking.getItem().getOwner().getId()))
                 .thenReturn(Optional.of(booking.getBooker()));
-        when(bookingRepository.getBookingsByItemOwnerId(
+        when(bookingRepository.searchBookingByItemOwnerIdOrderByStartDesc(
                 booking.getItem().getOwner().getId(),
                 pageRequest))
                 .thenReturn(Collections.singletonList(booking));
@@ -395,7 +395,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(owner.getId()))
                 .thenReturn(Optional.of(owner));
 
-        when(bookingRepository.getBookingsByItemOwnerId(
+        when(bookingRepository.searchBookingByItemOwnerIdOrderByStartDesc(
                 bookingState.getItem().getOwner().getId(),
                 pageRequest))
                 .thenReturn(Collections.singletonList(bookingState));
@@ -424,7 +424,7 @@ class BookingServiceImplTest {
     void getAllBookingItemsUserStatusPastTest() {
         Booking bookingState = new Booking(
                 1L,
-                LocalDateTime.now().minusDays(1),
+                LocalDateTime.now().minusDays(10),
                 LocalDateTime.now().minusDays(5),
                 item,
                 booker,
@@ -433,12 +433,12 @@ class BookingServiceImplTest {
         when(userRepository.findById(owner.getId()))
                 .thenReturn(Optional.of(owner));
 
-        when(bookingRepository.getBookingsByItemOwnerId(
+        when(bookingRepository.searchBookingByItemOwnerIdOrderByStartDesc(
                 bookingState.getItem().getOwner().getId(),
                 pageRequest))
                 .thenReturn(Collections.singletonList(bookingState));
 
-        when(bookingRepository.findBookingsByItemOwnerIdAndEndIsBeforeOrderByStartDesc(
+        when(bookingRepository.findBookingsByItemOwnerIdAndEndIsBefore(
                 anyLong(),
                 any(),
                 any()))
@@ -471,7 +471,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(owner.getId()))
                 .thenReturn(Optional.of(owner));
 
-        when(bookingRepository.getBookingsByItemOwnerId(
+        when(bookingRepository.searchBookingByItemOwnerIdOrderByStartDesc(
                 bookingState.getItem().getOwner().getId(),
                 pageRequest))
                 .thenReturn(Collections.singletonList(bookingState));
@@ -509,7 +509,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(owner.getId()))
                 .thenReturn(Optional.of(owner));
 
-        when(bookingRepository.getBookingsByItemOwnerId(
+        when(bookingRepository.searchBookingByItemOwnerIdOrderByStartDesc(
                 bookingState.getItem().getOwner().getId(),
                 pageRequest))
                 .thenReturn(Collections.singletonList(bookingState));
@@ -546,7 +546,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(owner.getId()))
                 .thenReturn(Optional.of(owner));
 
-        when(bookingRepository.getBookingsByItemOwnerId(
+        when(bookingRepository.searchBookingByItemOwnerIdOrderByStartDesc(
                 bookingState.getItem().getOwner().getId(),
                 pageRequest))
                 .thenReturn(Collections.singletonList(bookingState));

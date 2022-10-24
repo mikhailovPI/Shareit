@@ -1,12 +1,12 @@
---drop table bookings cascade;
+drop table bookings cascade;
 
---drop table comments cascade;
+drop table comments cascade;
 
---drop table items cascade;
+drop table items cascade;
 
---drop table requests cascade;
+drop table requests cascade;
 
---drop table users cascade;
+drop table users cascade;
 
 CREATE TABLE IF NOT EXISTS users
 (
