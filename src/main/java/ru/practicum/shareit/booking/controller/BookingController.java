@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.model.BookingStateEnum;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
@@ -25,25 +24,23 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getAllBookings(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @RequestParam(name = "state", defaultValue = "ALL") String stateParam) {
-        BookingStateEnum state = BookingStateEnum.from(stateParam);
-        if (state == null) {
-            throw new IllegalArgumentException("Unknown state: " + stateParam);
-        }
+            @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
+            @RequestParam(name = "from", defaultValue = "0") int from,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
+
         log.info("GetMapping/Получение всех бронирований пользователя с id: " + userId);
-        return bookingService.getAllBookings(userId, stateParam);
+        return bookingService.getAllBookings(userId, stateParam, from, size);
     }
 
     @GetMapping(value = "/owner")
     public List<BookingDto> getAllBookingItemsUser(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @RequestParam(name = "state", defaultValue = "ALL") String stateParam) {
-        BookingStateEnum state = BookingStateEnum.from(stateParam);
-        if (state == null) {
-            throw new IllegalArgumentException("Unknown state: " + stateParam);
-        }
+            @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
+            @RequestParam(name = "from", defaultValue = "0") int from,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
+
         log.info("GetMapping/Получение всех бронирований для вещей пользователя с id: " + userId);
-        return bookingService.getAllBookingItemsUser(userId, stateParam);
+        return bookingService.getAllBookingItemsUser(userId, stateParam, from, size);
     }
 
     @GetMapping(value = "/{bookingId}")

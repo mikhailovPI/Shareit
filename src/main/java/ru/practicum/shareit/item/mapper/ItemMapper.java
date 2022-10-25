@@ -14,8 +14,8 @@ public class ItemMapper {
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
-                itemDto.getOwner(),
-                itemDto.getRequest());
+                null,
+                itemDto.getRequestId());
     }
 
     public static ItemDto toItemDto(Item item) {
@@ -24,8 +24,7 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                item.getOwner(),
-                item.getRequest());
+                item.getRequestId());
     }
 
     public static ItemDtoWithBooking toItemDtoWithBooking(Item item) {

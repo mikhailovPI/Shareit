@@ -1,24 +1,23 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.*;
-import ru.practicum.shareit.user.model.User;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDto {
 
-    private Long id;
+    Long id;
 
-    private String name;
+    String name;
 
-    private String description;
+    String description;
 
-    private Boolean available;
+    Boolean available;
 
-    private User owner;
-
-    private Long request;
-
+    Long requestId;
 }

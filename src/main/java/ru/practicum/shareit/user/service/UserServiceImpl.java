@@ -1,3 +1,4 @@
+
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
@@ -47,16 +48,13 @@ public class UserServiceImpl implements UserService {
             throw new ValidationException("Введен некорректный e-mail.");
         }
         User user = UserMapper.toUser(userDto);
-        final User userCreate = userRepository.save(user);
+        User userCreate = userRepository.save(user);
         return UserMapper.toUserDto(userCreate);
     }
 
     @Override
     @Transactional
     public void removeUser(Long id) {
-        userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("Пользователь %s не существует.", id)));
         userRepository.deleteById(id);
     }
 
@@ -66,7 +64,7 @@ public class UserServiceImpl implements UserService {
         final User user = UserMapper.toUser(userDto);
         final User userUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(
-                        String.format("Пользователь с %s не существует.", id)));
+                        String.format("Пользователь %s не существует.", id)));
         if (user.getEmail() != null && user.getName() == null) {
             userUpdate.setEmail(user.getEmail());
             userRepository.save(userUpdate);
