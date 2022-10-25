@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -49,6 +50,21 @@ class BookingControllerTest {
     private Item item;
     private ItemRequest itemRequest;
 
+    private ResultMatcher resultMatcher = content().json("{" +
+            "\"id\": 1," +
+            " \"item\": {\"id\": 1,\"name\": \"Item One\"," +
+            " \"description\": \"Description item one\", \"available\": true," +
+            " \"owner\": {\"id\": 1,\"name\": \"Name One\",\"email\": \"NameOne@gmail.com\"}," +
+            " \"requestId\": null}," +
+            " \"booker\": {\"id\": 2,\"name\": \"Name Two\",\"email\": \"NameTwo@gmail.com\"}}");
+
+    private ResultMatcher resultMatcherList = content().json("[{" +
+            "\"id\": 1," +
+            " \"item\": {\"id\": 1,\"name\": \"Item One\"," +
+            " \"description\": \"Description item one\", \"available\": true," +
+            " \"owner\": {\"id\": 1,\"name\": \"Name One\",\"email\": \"NameOne@gmail.com\"}," +
+            " \"requestId\": null}," +
+            " \"booker\": {\"id\": 2,\"name\": \"Name Two\",\"email\": \"NameTwo@gmail.com\"}}]");
 
     @BeforeEach
     void beforeEach() {
@@ -101,13 +117,7 @@ class BookingControllerTest {
                         .param("from", "0")
                         .param("size", "20"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{" +
-                        "\"id\": 1," +
-                        " \"item\": {\"id\": 1,\"name\": \"Item One\"," +
-                        " \"description\": \"Description item one\", \"available\": true," +
-                        " \"owner\": {\"id\": 1,\"name\": \"Name One\",\"email\": \"NameOne@gmail.com\"}," +
-                        " \"requestId\": null}," +
-                        " \"booker\": {\"id\": 2,\"name\": \"Name Two\",\"email\": \"NameTwo@gmail.com\"}}]"));
+                .andExpect(resultMatcherList);
     }
 
     @Test
@@ -125,13 +135,7 @@ class BookingControllerTest {
                         .param("from", "0")
                         .param("size", "20"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{" +
-                        "\"id\": 1," +
-                        " \"item\": {\"id\": 1,\"name\": \"Item One\"," +
-                        " \"description\": \"Description item one\", \"available\": true," +
-                        " \"owner\": {\"id\": 1,\"name\": \"Name One\",\"email\": \"NameOne@gmail.com\"}," +
-                        " \"requestId\": null}," +
-                        " \"booker\": {\"id\": 2,\"name\": \"Name Two\",\"email\": \"NameTwo@gmail.com\"}}]"));
+                .andExpect(resultMatcherList);
     }
 
     @Test
@@ -143,13 +147,7 @@ class BookingControllerTest {
         mockMvc.perform(get("/bookings/1")
                         .header("X-Sharer-User-Id", bookingDto.getBooker().getId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{" +
-                        "\"id\": 1," +
-                        " \"item\": {\"id\": 1,\"name\": \"Item One\"," +
-                        " \"description\": \"Description item one\", \"available\": true," +
-                        " \"owner\": {\"id\": 1,\"name\": \"Name One\",\"email\": \"NameOne@gmail.com\"}," +
-                        " \"requestId\": null}," +
-                        " \"booker\": {\"id\": 2,\"name\": \"Name Two\",\"email\": \"NameTwo@gmail.com\"}}"));
+                .andExpect(resultMatcher);
     }
 
     @Test
@@ -167,13 +165,7 @@ class BookingControllerTest {
                         .header("X-Sharer-User-Id", booker.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{" +
-                        "\"id\": 1," +
-                        " \"item\": {\"id\": 1,\"name\": \"Item One\"," +
-                        " \"description\": \"Description item one\", \"available\": true," +
-                        " \"owner\": {\"id\": 1,\"name\": \"Name One\",\"email\": \"NameOne@gmail.com\"}," +
-                        " \"requestId\": null}," +
-                        " \"booker\": {\"id\": 2,\"name\": \"Name Two\",\"email\": \"NameTwo@gmail.com\"}}"));
+                .andExpect(resultMatcher);
     }
 
     @Test
@@ -193,13 +185,7 @@ class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status", is("APPROVED")))
-                .andExpect(content().json("{" +
-                        "\"id\": 1," +
-                        " \"item\": {\"id\": 1,\"name\": \"Item One\"," +
-                        " \"description\": \"Description item one\", \"available\": true," +
-                        " \"owner\": {\"id\": 1,\"name\": \"Name One\",\"email\": \"NameOne@gmail.com\"}," +
-                        " \"requestId\": null}," +
-                        " \"booker\": {\"id\": 2,\"name\": \"Name Two\",\"email\": \"NameTwo@gmail.com\"}}"));
+                .andExpect(resultMatcher);
     }
 
     @Test

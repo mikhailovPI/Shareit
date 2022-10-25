@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request.model;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "requests", schema = "public")
 public class ItemRequest {
@@ -21,15 +23,15 @@ public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
-    private Long id;
+    Long id;
 
     @Column(name = "description")
-    private String description;
+    String description;
 
     @ManyToOne
     @JoinColumn(name = "requestor_id")
-    private User requestor;
+    User requestor;
 
     @Column(name = "created")
-    private LocalDateTime created;
+    LocalDateTime created;
 }

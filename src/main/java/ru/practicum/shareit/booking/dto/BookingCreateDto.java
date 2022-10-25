@@ -1,8 +1,8 @@
 package ru.practicum.shareit.booking.dto;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -10,17 +10,16 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingCreateDto {
 
-    private Long id;
+    Long id;
 
-    @NotNull(message = "Поле не может быть пустым")
-    private LocalDateTime start;
+    LocalDateTime start;
 
-    @NotNull(message = "Поле не может быть пустым")
-    private LocalDateTime end;
+    LocalDateTime end;
 
-    private Long itemId;
+    Long itemId;
 }
 
 

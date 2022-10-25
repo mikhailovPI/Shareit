@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.request.dto.ItemRequestWithItemDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
@@ -44,6 +45,14 @@ class ItemRequestControllerTest {
     private ItemRequest itemRequestOne;
     private User userOne;
 
+    ResultMatcher resultMatcher = content().json("{" +
+            "\"id\": 1," +
+            " \"description\": \"Description item request one\"}");
+
+    ResultMatcher resultMatcherList = content().json("[{" +
+            "\"id\": 1," +
+            " \"description\": \"Description item request one\"}]");
+
     @BeforeEach
     void beforeEach() {
         mockMvc = MockMvcBuilders
@@ -75,9 +84,7 @@ class ItemRequestControllerTest {
         mockMvc.perform(get("/requests")
                         .header("X-Sharer-User-Id", userOne.getId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{" +
-                        "\"id\": 1," +
-                        " \"description\": \"Description item request one\"}]"));
+                .andExpect(resultMatcherList);
     }
 
     @Test
@@ -89,9 +96,7 @@ class ItemRequestControllerTest {
         mockMvc.perform(get("/requests/1")
                         .header("X-Sharer-User-Id", userOne.getId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{" +
-                        "\"id\": 1," +
-                        " \"description\": \"Description item request one\"}"));
+                .andExpect(resultMatcher);
     }
 
     @Test
@@ -107,9 +112,7 @@ class ItemRequestControllerTest {
                         .param("from", "0")
                         .param("size", "20"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{" +
-                        "\"id\": 1," +
-                        " \"description\": \"Description item request one\"}]"));
+                .andExpect(resultMatcherList);
     }
 
     @Test

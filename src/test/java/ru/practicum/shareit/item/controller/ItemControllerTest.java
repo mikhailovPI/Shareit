@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -49,6 +50,30 @@ class ItemControllerTest {
     private ItemRequest itemRequest;
     private Item item;
     private Comment comment;
+
+    private ResultMatcher resultMatcher = content().json("{" +
+            "\"id\": 1," +
+            "\"name\": \"Item One\"," +
+            "\"description\": \"Description item one\", " +
+            "\"available\": true," +
+            "\"lastBooking\": null, " +
+            "\"nextBooking\": null, " +
+            "\"comments\": []}");
+    private ResultMatcher resultMatcherList = content().json("[{" +
+            "\"id\": 1," +
+            "\"name\": \"Item One\"," +
+            "\"description\": \"Description item one\", " +
+            "\"available\": true," +
+            "\"lastBooking\": null, " +
+            "\"nextBooking\": null, " +
+            "\"comments\": []}]");
+
+    private ResultMatcher getResultMatcherList = content().json("[{" +
+            "\"id\": 1," +
+            "\"name\": \"Item One\"," +
+            "\"description\": \"Description item one\", " +
+            "\"available\": true, " +
+            "\"requestId\": 1}]");
 
     @BeforeEach
     void createObjects() {
@@ -103,14 +128,7 @@ class ItemControllerTest {
                         .param("from", "0")
                         .param("size", "20"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{" +
-                        "\"id\": 1," +
-                        "\"name\": \"Item One\"," +
-                        "\"description\": \"Description item one\", " +
-                        "\"available\": true," +
-                        "\"lastBooking\": null, " +
-                        "\"nextBooking\": null, " +
-                        "\"comments\": []}]"));
+                .andExpect(resultMatcherList);
     }
 
     @Test
@@ -119,18 +137,11 @@ class ItemControllerTest {
         ItemDtoWithBooking itemDtoWithBooking = ItemMapper.toItemDtoWithBooking(item);
         when(itemService.getItemById(item.getOwner().getId(), 1L))
                 .thenReturn(itemDtoWithBooking);
+
         mockMvc.perform(get("/items/1")
                         .header("X-Sharer-User-Id", item.getOwner().getId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{" +
-                        "\"id\": 1," +
-                        "\"name\": \"Item One\"," +
-                        "\"description\": \"Description item one\", " +
-                        "\"available\": true," +
-                        "\"lastBooking\": null, " +
-                        "\"nextBooking\": null, " +
-                        "\"comments\": []}"));
-
+                .andExpect(resultMatcher);
     }
 
     @Test
@@ -146,12 +157,7 @@ class ItemControllerTest {
                         .param("from", "0")
                         .param("size", "20"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{" +
-                        "\"id\": 1," +
-                        "\"name\": \"Item One\"," +
-                        "\"description\": \"Description item one\", " +
-                        "\"available\": true, " +
-                        "\"requestId\": 1}]"));
+                .andExpect(getResultMatcherList);
     }
 
     @Test

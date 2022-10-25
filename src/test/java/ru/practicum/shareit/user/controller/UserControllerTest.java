@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -31,6 +32,11 @@ class UserControllerTest {
     private MockMvc mockMvc;
 
     private UserDto userDto;
+
+    ResultMatcher resultMatcher = content().json("{" +
+            "\"id\": 1," +
+            "\"email\": \"NameOne@gmail.com\"," +
+            "\"name\": \"Name One\"}");
 
     @BeforeEach
     void createUserDto() {
@@ -65,11 +71,9 @@ class UserControllerTest {
 
         mockMvc.perform(get("/users/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{" +
-                        "\"id\": 1," +
-                        "\"email\": \"NameOne@gmail.com\"," +
-                        "\"name\": \"Name One\"}"));
+                .andExpect(resultMatcher);
     }
+
 
     @Test
     @DisplayName("Вызов метода createUserTest: создание пользователя")
@@ -98,7 +102,8 @@ class UserControllerTest {
     @Test
     @DisplayName("Вызов метода patchUserTest: обновление пользователя")
     void patchUserTest() throws Exception {
-        UserDto userDtoTwo = new UserDto(1L,
+        UserDto userDtoTwo = new UserDto(
+                1L,
                 "NameTwo@gmail.com",
                 "Name Two");
 
