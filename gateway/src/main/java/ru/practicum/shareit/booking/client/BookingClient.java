@@ -17,6 +17,8 @@ import java.util.Map;
 public class BookingClient extends BaseClient {
     private static final String API_PREFIX = "/bookings";
 
+    private Map<String, Object> parameters;
+
     @Autowired
     public BookingClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
@@ -31,7 +33,7 @@ public class BookingClient extends BaseClient {
             BookingStateEnum state,
             Integer from,
             Integer size) {
-        Map<String, Object> parameters = Map.of(
+        parameters = Map.of(
                 "state", state.name(),
                 "from", from,
                 "size", size);
@@ -43,7 +45,7 @@ public class BookingClient extends BaseClient {
             BookingStateEnum state,
             Integer from,
             Integer size) {
-        Map<String, Object> parameters = Map.of(
+        parameters = Map.of(
                 "state", state.name(),
                 "from", from,
                 "size", size);
@@ -66,7 +68,7 @@ public class BookingClient extends BaseClient {
             Long userId,
             Long bookingId,
             Boolean approved) {
-        Map<String, Object> parameters = Map.of(
+        parameters = Map.of(
                 "approved", approved
         );
         return patch("/" + bookingId + "?approved={approved}", userId, parameters, null);

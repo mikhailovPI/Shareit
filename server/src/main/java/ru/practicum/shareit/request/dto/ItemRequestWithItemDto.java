@@ -9,11 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemRequestWithItemDto {
 

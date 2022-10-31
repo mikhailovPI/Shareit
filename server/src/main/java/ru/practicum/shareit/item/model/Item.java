@@ -9,11 +9,9 @@ import javax.persistence.*;
 /**
  * TODO Sprint add-controllers.
  */
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@ToString
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "items", schema = "public")

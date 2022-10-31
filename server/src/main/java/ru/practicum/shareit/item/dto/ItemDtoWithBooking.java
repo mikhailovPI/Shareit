@@ -6,9 +6,7 @@ import ru.practicum.shareit.booking.dto.BookingItemDto;
 
 import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

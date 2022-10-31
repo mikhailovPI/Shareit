@@ -12,9 +12,7 @@ import java.time.LocalDateTime;
  * TODO Sprint add-bookings.
  */
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
