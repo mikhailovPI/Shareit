@@ -29,7 +29,3 @@
         return bookingService.getAllBookingItemsUser(userId, stateParam, from, size);
     }
 ```
-
-Примеры запросов в БД (используемый язык: Java и SQL):
-
-```
