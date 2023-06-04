@@ -2,7 +2,7 @@
 
 **Программа позволяет производить бронирование вещи, оставлять комментарии к вещи и делать запрос на бронирования вещи.**
 
-**Используемые стек: Java 11, Spring Boot, Spring JPA, Maven, PostgreSQL, Docker**
+**Используемый стек: Java 11, Spring Boot, Spring JPA, Maven, PostgreSQL, Docker**
 
 **Программа имеет два сервиса: geateway и server.**
 
